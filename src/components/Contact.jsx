@@ -3,7 +3,7 @@ import Icon, { BrandIcon } from './Icons.jsx'
 import Reveal from './Reveal.jsx'
 import SectionHeading from './SectionHeading.jsx'
 import { contactInfo, serviceOptions, socials } from '../data/content.js'
-import submitInquiry, { buildWhatsAppUrl } from '../services/submitInquiry.js'
+import { buildMailtoUrl, buildWhatsAppUrl } from '../services/submitInquiry.js'
 
 const initialValues = { name: '', email: '', phone: '', service: '', message: '' }
 
@@ -46,16 +46,16 @@ export default function Contact() {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [whatsAppUrl, setWhatsAppUrl] = useState('')
+  const [mailUrl, setMailUrl] = useState('')
   const formRef = useRef(null)
 
   const update = (e) => {
     const { name, value } = e.target
     setValues((v) => ({ ...v, [name]: value }))
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
-    if (status === 'error') setStatus('idle')
   }
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
     const found = validate(values)
     setErrors(found)
@@ -65,15 +65,13 @@ export default function Contact() {
       formRef.current?.querySelector(`[name="${first}"]`)?.focus()
       return
     }
-    setStatus('submitting')
-    try {
-      await submitInquiry(values)
-      setWhatsAppUrl(buildWhatsAppUrl(values))
-      setStatus('success')
-      setValues(initialValues)
-    } catch {
-      setStatus('error')
-    }
+    const mailto = buildMailtoUrl(values)
+    setMailUrl(mailto)
+    setWhatsAppUrl(buildWhatsAppUrl(values))
+    setStatus('success')
+    setValues(initialValues)
+    // Opens the client's email app with the inquiry ready; the client presses Send.
+    window.location.href = mailto
   }
 
   const aria = (name) => ({
@@ -106,15 +104,22 @@ export default function Contact() {
                 <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-violet text-white shadow-[0_10px_40px_-8px_rgba(99,102,241,0.9)]">
                   <Icon name="check" size={30} strokeWidth={2.4} />
                 </span>
-                <h3 className="mt-6 text-2xl font-semibold text-white">Thank you. Your inquiry is in.</h3>
+                <h3 className="mt-6 text-2xl font-semibold text-white">Your email is ready to send.</h3>
                 <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
-                  We&apos;ve received your message and will get back to you about your project soon.
+                  Your email app should have opened with your inquiry written out. Press Send there to deliver it to us. Nothing is sent until you do.
                 </p>
+                <a
+                  href={mailUrl}
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue via-brand-indigo to-brand-violet px-5 py-3 text-sm font-semibold text-white"
+                >
+                  Open email again
+                  <Icon name="arrow" size={16} />
+                </a>
                 <a
                   href={whatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1]"
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1]"
                 >
                   Also send on WhatsApp
                   <Icon name="arrow" size={16} />
@@ -165,23 +170,14 @@ export default function Contact() {
                   </Field>
                 </div>
 
-                {status === 'error' && (
-                  <p role="alert" className="flex items-start gap-2 rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 sm:col-span-2">
-                    <Icon name="alert" size={18} className="mt-0.5 shrink-0" />
-                    Something went wrong while sending your inquiry. Please try again in a moment.
-                  </p>
-                )}
-
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
                     disabled={status === 'submitting'}
                     className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue via-brand-indigo to-brand-violet px-6 py-4 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(99,102,241,0.7)] transition-all duration-300 hover:shadow-[0_10px_40px_-6px_rgba(139,92,246,0.85)] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-10"
                   >
-                    {status === 'submitting' ? 'Sending…' : 'Submit Inquiry'}
-                    {status !== 'submitting' && (
-                      <Icon name="arrow" size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-                    )}
+                    Submit Inquiry
+                    <Icon name="arrow" size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </div>
               </form>
