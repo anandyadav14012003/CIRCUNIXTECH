@@ -27,16 +27,16 @@ src/
                           Icons, Reveal, SectionHeading
 ```
 
-## Things to fill in
+## Contact form delivery
 
-1. **Contact details**: edit `contactInfo` in `src/data/content.js`. They are placeholders
-   (`hello@your-domain.com`, etc.). Add an `href` such as `mailto:...` or `tel:...` to make them clickable.
-2. **Social links**: replace the `#` hrefs in `socials` in the same file.
-3. **Contact form backend**: create a `.env` file with
-   `VITE_INQUIRY_ENDPOINT=https://your-api.example.com/inquiries`.
-   The form then POSTs JSON `{ name, email, phone, service, message, submittedAt }` to it.
-   Without it, submissions are simulated locally and nothing is sent.
-4. **SEO**: update the canonical URL / Open Graph image in `index.html` once the domain is known.
+- **Email:** on submit (after validation) the client's own email app opens with a message to
+  `inquiryDelivery.email` (set in `src/data/content.js`), pre-filled with their name, email, phone,
+  service and project description. The client presses Send. No server or account is needed.
+- **WhatsApp:** the confirmation screen also has an "Also send on WhatsApp" button that opens a chat with
+  `inquiryDelivery.whatsappNumber` and the same text ready to send.
+- Both rely on the client pressing Send, so nothing is delivered automatically. For automatic delivery you
+  would need a backend or a form service.
+- Contact details and social links live in `src/data/content.js` (social hrefs are still `#`).
 
 ## Notes
 
