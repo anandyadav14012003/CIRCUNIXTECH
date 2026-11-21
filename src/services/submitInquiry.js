@@ -22,6 +22,15 @@ export function buildMailtoUrl(values) {
   return `mailto:${inquiryDelivery.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }
 
+// Opens Gmail's compose window in the browser. Works on any device without a mail app,
+// for clients who are signed in to Gmail.
+export function buildGmailUrl(values) {
+  const subject = `New inquiry from ${values.name}: ${values.service}`
+  const body = ['Hello Circunix Tech,', '', ...inquiryLines(values)].join('\n')
+  const params = new URLSearchParams({ view: 'cm', fs: '1', to: inquiryDelivery.email, su: subject, body })
+  return `https://mail.google.com/mail/?${params.toString()}`
+}
+
 export function buildWhatsAppUrl(values) {
   const text = ['New inquiry from the Circunix Tech website', '', ...inquiryLines(values)].join('\n')
   return `https://wa.me/${inquiryDelivery.whatsappNumber}?text=${encodeURIComponent(text)}`

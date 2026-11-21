@@ -3,7 +3,7 @@ import Icon, { BrandIcon } from './Icons.jsx'
 import Reveal from './Reveal.jsx'
 import SectionHeading from './SectionHeading.jsx'
 import { contactInfo, serviceOptions, socials } from '../data/content.js'
-import { buildMailtoUrl, buildWhatsAppUrl } from '../services/submitInquiry.js'
+import { buildGmailUrl, buildMailtoUrl, buildWhatsAppUrl } from '../services/submitInquiry.js'
 
 const initialValues = { name: '', email: '', phone: '', service: '', message: '' }
 
@@ -47,6 +47,7 @@ export default function Contact() {
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [whatsAppUrl, setWhatsAppUrl] = useState('')
   const [mailUrl, setMailUrl] = useState('')
+  const [gmailUrl, setGmailUrl] = useState('')
   const formRef = useRef(null)
 
   const update = (e) => {
@@ -67,6 +68,7 @@ export default function Contact() {
     }
     const mailto = buildMailtoUrl(values)
     setMailUrl(mailto)
+    setGmailUrl(buildGmailUrl(values))
     setWhatsAppUrl(buildWhatsAppUrl(values))
     setStatus('success')
     setValues(initialValues)
@@ -106,13 +108,22 @@ export default function Contact() {
                 </span>
                 <h3 className="mt-6 text-2xl font-semibold text-white">Your email is ready to send.</h3>
                 <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
-                  Your email app should have opened with your inquiry written out. Press Send there to deliver it to us. Nothing is sent until you do.
+                  Your inquiry is written out and ready. Open it in Gmail or your email app and press Send to deliver it to us. Nothing is sent until you do.
                 </p>
                 <a
-                  href={mailUrl}
+                  href={gmailUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue via-brand-indigo to-brand-violet px-5 py-3 text-sm font-semibold text-white"
                 >
-                  Open email again
+                  Open in Gmail
+                  <Icon name="arrow" size={16} />
+                </a>
+                <a
+                  href={mailUrl}
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1]"
+                >
+                  Open in email app
                   <Icon name="arrow" size={16} />
                 </a>
                 <a
