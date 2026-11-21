@@ -1,3 +1,4 @@
+import CursorGlow from './components/CursorGlow.jsx'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Services from './components/Services.jsx'
@@ -17,6 +18,7 @@ export default function App() {
       >
         Skip to content
       </a>
+      <CursorGlow />
       <Navbar />
       <main>
         <Hero />

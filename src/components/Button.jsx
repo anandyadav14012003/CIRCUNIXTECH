@@ -1,4 +1,6 @@
+import { useRef } from 'react'
 import Icon from './Icons.jsx'
+import { finePointer } from '../hooks/finePointer.js'
 
 const base =
   'group inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-offset-4'
@@ -12,7 +14,27 @@ const variants = {
     'px-4 py-2.5 text-sm text-white bg-gradient-to-r from-brand-blue via-brand-indigo to-brand-violet hover:shadow-[0_8px_28px_-6px_rgba(99,102,241,0.8)]',
 }
 
-export default function Button({ href, variant = 'primary', arrow = false, className = '', children, ...rest }) {
+export default function Button({ href, variant = 'primary', arrow = false, magnetic = variant !== 'small', className = '', children, ...rest }) {
+  const ref = useRef(null)
+
+  // Magnetic pull: the button drifts a little toward the cursor while hovered (desktop mouse only).
+  const magnet = magnetic
+    ? {
+        style: { transform: 'translate3d(var(--tx, 0px), var(--ty, 0px), 0)' },
+        onPointerMove: (e) => {
+          if (e.pointerType !== 'mouse' || !finePointer()) return
+          const el = ref.current
+          const r = el.getBoundingClientRect()
+          el.style.setProperty('--tx', `${((e.clientX - (r.left + r.width / 2)) * 0.2).toFixed(1)}px`)
+          el.style.setProperty('--ty', `${((e.clientY - (r.top + r.height / 2)) * 0.3).toFixed(1)}px`)
+        },
+        onPointerLeave: () => {
+          ref.current.style.setProperty('--tx', '0px')
+          ref.current.style.setProperty('--ty', '0px')
+        },
+      }
+    : {}
+
   const classes = `${base} ${variants[variant]} ${className}`
   const content = (
     <>
@@ -22,13 +44,13 @@ export default function Button({ href, variant = 'primary', arrow = false, class
   )
   if (href) {
     return (
-      <a href={href} className={classes} {...rest}>
+      <a ref={ref} href={href} className={classes} {...magnet} {...rest}>
         {content}
       </a>
     )
   }
   return (
-    <button className={classes} {...rest}>
+    <button ref={ref} className={classes} {...magnet} {...rest}>
       {content}
     </button>
   )

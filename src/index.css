@@ -103,9 +103,38 @@ h1, h2, h3, h4 {
 .dash-flow { animation: dash-flow 2.4s linear infinite; }
 .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
 
+/* Cursor-driven hero: --px / --py (-1..1) are set on the hero by Hero.jsx */
+.hero-tilt {
+  transform: perspective(1000px) rotateX(calc(var(--py, 0) * -5deg)) rotateY(calc(var(--px, 0) * 7deg));
+  transition: transform 0.3s ease-out;
+}
+.hero-shift {
+  transform: translate3d(calc(var(--px, 0) * -26px), calc(var(--py, 0) * -26px), 0);
+  transition: transform 0.45s ease-out;
+}
+
+/* Interactive cards: tilt toward the cursor, with a light that follows it (TiltCard.jsx) */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ly, 0px));
+  transition: transform 0.25s ease-out, border-color 0.5s, box-shadow 0.5s;
+  will-change: transform;
+}
+.tilt-spot {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(99, 102, 241, 0.2), transparent 65%);
+}
+.tilt:hover .tilt-spot { opacity: 1; }
+
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .hero-tilt, .hero-shift, .tilt { transform: none; }
+  .tilt-spot { display: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .animate-grid, .float-slow, .dash-flow, .pulse-glow { animation: none; }
 }

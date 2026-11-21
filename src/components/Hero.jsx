@@ -1,15 +1,39 @@
+import { useRef } from 'react'
 import Button from './Button.jsx'
+import { finePointer } from '../hooks/finePointer.js'
 import HeroVisual from './HeroVisual.jsx'
 import Reveal from './Reveal.jsx'
 
 export default function Hero() {
+  const ref = useRef(null)
+
+  // Publishes the cursor position (-1 to 1) as --px / --py so the illustration can react to it.
+  const onMove = (e) => {
+    if (e.pointerType !== 'mouse' || !finePointer()) return
+    const el = ref.current
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--px', (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3))
+    el.style.setProperty('--py', (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3))
+  }
+  const onLeave = () => {
+    ref.current.style.setProperty('--px', '0')
+    ref.current.style.setProperty('--py', '0')
+  }
+
   return (
-    <section id="home" className="relative isolate overflow-hidden pt-[4.5rem]" aria-labelledby="hero-title">
+    <section
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      id="home"
+      className="relative isolate overflow-hidden pt-[4.5rem]"
+      aria-labelledby="hero-title"
+    >
       {/* background: lighting + animated grid */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div className="bg-grid animate-grid absolute inset-0" />
-        <div className="absolute -left-40 top-10 h-[480px] w-[480px] rounded-full bg-brand-indigo/20 blur-[120px]" />
-        <div className="absolute -right-32 top-40 h-[420px] w-[420px] rounded-full bg-brand-violet/20 blur-[120px]" />
+        <div className="hero-shift absolute -left-40 top-10 h-[480px] w-[480px] rounded-full bg-brand-indigo/20 blur-[120px]" />
+        <div className="hero-shift absolute -right-32 top-40 h-[420px] w-[420px] rounded-full bg-brand-violet/20 blur-[120px]" />
         <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-brand-blue/10 blur-[110px]" />
       </div>
 

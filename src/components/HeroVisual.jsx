@@ -4,9 +4,9 @@ export default function HeroVisual() {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[560px]">
       {/* ambient light behind the illustration */}
-      <div className="pulse-glow absolute inset-[8%] rounded-full bg-gradient-to-br from-brand-blue/30 via-brand-indigo/25 to-brand-violet/30 blur-3xl" />
+      <div className="pulse-glow hero-shift absolute inset-[8%] rounded-full bg-gradient-to-br from-brand-blue/30 via-brand-indigo/25 to-brand-violet/30 blur-3xl" />
 
-      <svg viewBox="0 0 560 560" className="relative h-full w-full" role="img" aria-label="Abstract illustration of connected software, devices and networks">
+      <svg viewBox="0 0 560 560" className="hero-tilt relative h-full w-full" role="img" aria-label="Abstract illustration of connected software, devices and networks">
         <defs>
           <linearGradient id="hv-top" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#38bdf8" stopOpacity="0.9" />

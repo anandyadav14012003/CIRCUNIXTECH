@@ -38,6 +38,14 @@ src/
   would need a backend or a form service.
 - Contact details and social links live in `src/data/content.js` (social hrefs are still `#`).
 
+## Motion effects
+
+- Cursor glow, hero parallax/tilt, card tilt + spotlight and magnetic buttons run only with a real mouse
+  (`src/hooks/finePointer.js`). Touch devices and visitors with reduced-motion turned on do not get them.
+- The Process line fills as you scroll (`src/components/Process.jsx`).
+- To remove one: cursor glow = delete `<CursorGlow />` in `App.jsx`; magnetic = pass `magnetic={false}` to a Button;
+  card tilt = swap `TiltCard` for a plain element.
+
 ## Notes
 
 - Fonts (Sora + Inter) load from Google Fonts with `display=swap`.
